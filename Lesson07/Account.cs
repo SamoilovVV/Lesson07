@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace UsingDelegates
+﻿namespace UsingDelegates
 {
     class Account
     {
@@ -15,6 +11,8 @@ namespace UsingDelegates
             CurrentSum = sum;
         }
 
+        public int CurrentSum { get; private set; }
+
         public void RegisterStateHandler(AccountStateHandler stateHandler)
         {
             _stateHandler += stateHandler;
@@ -25,15 +23,21 @@ namespace UsingDelegates
             _stateHandler -= stateHandler;
         }
 
-        public int CurrentSum { get; private set; }
-
         public void Put(int sum)
         {
-            CurrentSum += sum;
-            _stateHandler?.Invoke($"Счёт пополнен на {sum}. {CurrentSumAsString}");
+            if (sum > 0)
+            {
+                CurrentSum += sum;
+                _stateHandler?.Invoke($"Счёт пополнен на {sum}. {CurrentSumAsString}");
+            }
+            else
+            {
+                _stateHandler?.Invoke($"Сумма пополнения должна быть положительной! {CurrentSumAsString}");
+            }
+            
         }
 
-        public void Withdraw(int sum)
+        public void Take(int sum)
         {
             if (sum <= CurrentSum)
             {
